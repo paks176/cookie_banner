@@ -1,0 +1,183 @@
+<div class="cookie-banner__wrapper">
+    <div class="cookie-banner">
+        <p>Мы используем файлы cookie для корректной работы сайта, а также для аналитики и показа персонализированной рекламы. Вы можете выбрать, какие cookie-файлы разрешить. Подробнее — в <a href="/privacy-policy" target="_blank">политике конфиденциальности</a>.</p>
+        <div class="cookie-buttons">
+            <button id="accept-all">Принять все</button>
+            <button id="accept-necessary">Принять только обязательные</button>
+            <button id="decline-all">Отклонить все</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .cookie-banner__wrapper {
+        position: fixed;
+        bottom: 50px;
+        left: 0;
+        justify-content: center;
+        align-items: center;
+        display: none;
+        opacity: 0;
+        transition: opacity 0.3s ease-in;
+        width: 100vw;
+        z-index: 99;
+    }
+
+    .cookie-banner {
+        background-color: #FFFFFF;
+        border-radius: 12px;
+        padding: 10px 20px;
+        max-width: 70%;
+        color: #171818;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 30px;
+        font-size: 16px;
+        font-family: 'Montserrat', Arial, sans-serif;
+    }
+    .cookie-banner p {
+        margin: 0;
+    }
+
+    .cookie-banner a {
+        white-space: nowrap;
+        color: #2b7f6d !important;
+        text-decoration: underline !important;
+    }
+
+    .cookie-buttons {
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 10px;
+    }
+
+    .cookie-buttons button {
+        background: #171818;
+        color: #FFFFFF;
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        white-space: nowrap;
+        cursor: pointer;
+        font-size: inherit;
+        font-family: inherit;
+        flex-grow: 1;
+        &:hover {
+            background: #3f3d3d;
+        }
+    }
+
+    #accept-all {
+        color: #171818;
+        background-image: linear-gradient(0.361turn, rgba(6, 233, 205, 1) 0%, rgba(4, 219, 133, 1) 100%);
+    }
+
+    @media (max-width: 1440px) {
+        .cookie-banner__wrapper {
+            bottom: 20px;
+        }
+
+        .cookie-banner {
+            font-size: 14px;
+            flex-wrap: wrap;
+        }
+
+        .cookie-buttons {
+            flex-wrap: wrap;
+        }
+    }
+</style>
+
+<script>
+    function initCookieBanner () {
+        const YMCounterNumber = '' // номер счетчика метрики ЯМ
+        let YMElement
+
+        if (YMCounterNumber) {
+            YMElement = document.createElement('div')
+            YMElement.innerHTML = `<script type="text/javascript">(function(m,e,t,r,i,k,a){m[i]=m[i]function(){(m[i].a=m[i].a[]).push(arguments)};m[i].l=1*new Date();for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");ym(${YMCounterNumber}, "init", {clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});</` + `script><noscript><div><img src="https://mc.yandex.ru/watch/${YMCounterNumber}" style="position:absolute; left:-9999px;" alt="" /></div></noscript>`
+        }
+
+        const ROICounterNumber = '' // номер счетчика метрики Ройстат
+        let ROIElement
+
+        if (ROICounterNumber) {
+            ROIElement = document.createElement('script')
+            ROIElement.innerHTML = 'console.log("ROI")'
+        }
+
+        const banner = document.querySelector('.cookie-banner__wrapper')
+
+        let consent = false
+
+        if (document.cookie) {
+            const parsedCookie = document.cookie.split(' ')
+            const consentCookie = parsedCookie.find(el => el.startsWith('cookieConsent'))
+            if (consentCookie) {
+                consent = consentCookie.includes('true')
+                if (consent) {
+                    const oldCookieSettings = parsedCookie.find(el => el.startsWith('cookieType'))
+                    if (oldCookieSettings && oldCookieSettings === 'cookieType=acceptAll;') {
+                        if (YMElement) {
+                            document.body.append(YMElement)
+                        }
+                        if (ROIElement) {
+                            document.body.appendChild(ROIElement)
+                        }
+                    }
+                }
+            }
+        }
+
+        if (banner && !consent) {
+            const necessaryButton = banner.querySelector('#accept-necessary')
+            const allButton = banner.querySelector('#accept-all')
+            const declineButton = banner.querySelector('#decline-all')
+
+            function saveAndHide (type) {
+                document.cookie = encodeURIComponent('cookieConsent') + '=' + encodeURIComponent('true')
+                document.cookie = encodeURIComponent('cookieType') + '=' + encodeURIComponent(`${type}`)
+                banner.style.opacity = '0'
+                setTimeout(() => {
+                    banner.style.display = 'none'
+                }, 500)
+            }
+
+            declineButton.addEventListener('click', () => saveAndHide('declineAll'))
+
+            necessaryButton.addEventListener('click', () => saveAndHide('declineAll'))
+
+            allButton.addEventListener('click', () => {
+                if (YMElement) {
+                    document.body.append(YMElement)
+                }
+                if (ROIElement) {
+                    document.body.appendChild(ROIElement)
+                }
+                saveAndHide('acceptAll')
+            })
+
+            banner.style.display = 'flex'
+            setTimeout(() => {
+                banner.style.opacity = '1'
+            }, 500)
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initCookieBanner()
+
+        const setCookieButton = document.querySelector('a[href="#setCookie"]')
+
+        if (setCookieButton) {
+            setCookieButton.addEventListener('click', (event) => {
+                event.preventDefault()
+                document.cookie = encodeURIComponent('cookieConsent') + '=' + encodeURIComponent('false')
+                document.cookie = encodeURIComponent('cookieType') + '=' + encodeURIComponent(`unset`)
+                initCookieBanner()
+            })
+        }
+    })
+</script>
