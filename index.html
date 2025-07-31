@@ -188,7 +188,7 @@
                     consent = consentCookie.includes('true')
                     if (consent) {
                         const oldCookieSettings = parsedCookie.find(el => el.startsWith('cookieType'))
-                        if (oldCookieSettings && oldCookieSettings === 'cookieType=acceptAll;') {
+                        if (oldCookieSettings && oldCookieSettings.includes('acceptAll')) {
                             if (YMElement) {
                                 document.body.append(YMElement)
                             }
