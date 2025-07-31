@@ -7,9 +7,9 @@
         <a href="/privacy-policy" target="_blank">политике конфиденциальности</a>.
       </p>
       <div class="cookie-buttons">
-        <button id="accept-all">Принять все</button>
-        <button id="accept-necessary">Принять только обязательные</button>
-        <button id="decline-all">Отклонить все</button>
+        <button id="accept-all" @click="saveAndHide">Принять все</button>
+        <button id="accept-necessary" @click="saveAndHide">Принять только обязательные</button>
+        <button id="decline-all" @click="saveAndHide">Отклонить все</button>
       </div>
     </div>
   </div>
@@ -23,20 +23,35 @@ export default {
     return {
       YMCounterNumber: "21809458", // номер счетчика метрики ЯМ
       ROICounterNumber: "0423118e6978725aafc69893bfd4ec2e", // номер счетчика метрики Ройстат
+      YMElement: null,
+      ROIElement: null,
     };
   },
 
   methods: {
-    saveAndHide(type) {
-      document.cookie = encodeURIComponent("cookieConsent") + "=" + encodeURIComponent("true");
-      document.cookie = encodeURIComponent("cookieType") + "=" + encodeURIComponent(`${type}`);
+    showBanner() {
+      this.$el.style.display = "flex";
+
+      setTimeout(() => {
+        this.$el.style.opacity = "1";
+      }, 500);
+    },
+
+    hideBanner() {
       this.$el.style.opacity = "0";
 
       setTimeout(() => {
         this.$el.style.display = "none";
       }, 500);
+    },
 
-      if (type === "declineAll") {
+    saveAndHide(event) {
+      document.cookie = encodeURIComponent("cookieConsent") + "=" + encodeURIComponent("true");
+
+      const id = event.target.id;
+
+      if (id === "decline-all" || id === "accept-necessary") {
+        document.cookie = encodeURIComponent("cookieType") + "=" + encodeURIComponent("declineAll");
         const counterYM = document.querySelector(`#counter_${this.$data.YMCounterNumber}`);
         if (counterYM) {
           counterYM.remove();
@@ -47,80 +62,64 @@ export default {
           counterROI.remove();
         }
       }
-    },
 
-    initCookieBanner() {
-      let YMElement;
+      if (id === "accept-all") {
+        document.cookie = encodeURIComponent("cookieType") + "=" + encodeURIComponent("acceptAll");
 
-      if (this.$data.YMCounterNumber) {
-        YMElement = document.createElement("div");
-        YMElement.id = "counter_" + this.$data.YMCounterNumber;
-        YMElement.innerHTML =
-            `<script type="text/javascript">(function(m,e,t,r,i,k,a){m[i]=m[i]function(){(m[i].a=m[i].a[]).push(arguments)};m[i].l=1*new Date();for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");ym(${this.$data.YMCounterNumber}, "init", {clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});</` +
-            `script><noscript><div><img src="https://mc.yandex.ru/watch/${this.$data.YMCounterNumber}" style="position:absolute; left:-9999px;" alt="" /></div></noscript>`;
-      }
-
-      let ROIElement;
-
-      if (this.$data.ROICounterNumber) {
-        ROIElement = document.createElement("div");
-        ROIElement.id = "counter_" + this.$data.ROICounterNumber;
-        ROIElement.innerHTML =
-            `<script>(function(w, d, s, h, id) {w.roistatProjectId = id; w.roistatHost = h;var p = d.location.protocol == "https:" ? "https://" : "http://";var u = /^.*roistat_visit=[^;]+(.*)?$/.test(d.cookie) ? "/dist/module.js" : "/api/site/1.0/"+id+"/init?referrer="+encodeURIComponent(d.location.href); var js = d.createElement(s);js.charset="UTF-8"; js.async = 1; js.src = p+h+u; var js2 = d.getElementsByTagName(s)[0]; js2.parentNode.insertBefore(js, js2);})(window, document, "script", "cloud.roistat.com",${this.$data.ROICounterNumber});</` +
-            'script><script>var RoiTildaTimer = setInterval(function() {if (!!window.roistat && !!window.roistat.visit) {clearInterval(RoiTildaTimer);var roiCount=0;var roiFieldsObj = {};document.querySelectorAll("form").forEach(el => {roiFieldsObj["roiformu" + roiCount] = document.createElement("input");roiFieldsObj["roiformu" + roiCount].type = "hidden";roiFieldsObj["roiformu" + roiCount].name = "roistat_url";roiFieldsObj["roiformu" + roiCount].value = document.location.href;el.append(roiFieldsObj["roiformu" + roiCount]);roiFieldsObj["roiformv" + roiCount] = document.createElement("input");roiFieldsObj["roiformv" + roiCount].type = "hidden";roiFieldsObj["roiformv" + roiCount].name = "roistat_fields_roistat";roiFieldsObj["roiformv" + roiCount].value = window.roistat.visit;el.append(roiFieldsObj["roiformv" + roiCount]);roiCount ++;});}},200);</' +
-            "script>";
-      }
-
-      let consent = false;
-
-      if (document.cookie) {
-        const parsedCookie = document.cookie.split(" ");
-        const consentCookie = parsedCookie.find((el) => el.startsWith("cookieConsent"));
-        if (consentCookie) {
-          consent = consentCookie.includes("true");
-          if (consent) {
-            const oldCookieSettings = parsedCookie.find((el) => el.startsWith("cookieType"));
-            if (oldCookieSettings && oldCookieSettings === "cookieType=acceptAll;") {
-              if (YMElement) {
-                document.body.append(YMElement);
-              }
-              if (ROIElement) {
-                document.body.appendChild(ROIElement);
-              }
-            }
-          }
+        if (this.$data.YMElement) {
+          document.body.appendChild(this.$data.YMElement);
+        }
+        if (this.$data.ROIElement) {
+          document.body.appendChild(this.$data.ROIElement);
         }
       }
 
-      if (!consent) {
-        const necessaryButton = this.$el.querySelector("#accept-necessary");
-        const allButton = this.$el.querySelector("#accept-all");
-        const declineButton = this.$el.querySelector("#decline-all");
-
-        declineButton.addEventListener("click", () => this.saveAndHide("declineAll"));
-
-        necessaryButton.addEventListener("click", () => this.saveAndHide("declineAll"));
-
-        allButton.addEventListener("click", () => {
-          if (YMElement) {
-            document.body.append(YMElement);
-          }
-          if (ROIElement) {
-            document.body.appendChild(ROIElement);
-          }
-          this.saveAndHide("acceptAll");
-        });
-
-        this.$el.style.display = "flex";
-        setTimeout(() => {
-          this.$el.style.opacity = "1";
-        }, 500);
-      }
+      this.hideBanner();
     },
   },
 
   mounted() {
-    this.initCookieBanner();
+    if (this.$data.YMCounterNumber) {
+      this.$data.YMElement = document.createElement("div");
+      this.$data.YMElement.id = "counter_" + this.$data.YMCounterNumber;
+      this.$data.YMElement.innerHTML =
+          `<script type="text/javascript">(function(m,e,t,r,i,k,a){m[i]=m[i]function(){(m[i].a=m[i].a[]).push(arguments)};m[i].l=1*new Date();for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");ym(${this.$data.YMCounterNumber}, "init", {clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});</` +
+          `script><noscript><div><img src="https://mc.yandex.ru/watch/${this.$data.YMCounterNumber}" style="position:absolute; left:-9999px;" alt="" /></div></noscript>`;
+    }
+
+    if (this.$data.ROICounterNumber) {
+      this.$data.ROIElement = document.createElement("div");
+      this.$data.ROIElement.id = "counter_" + this.$data.ROICounterNumber;
+      this.$data.ROIElement.innerHTML =
+          `<script>(function(w, d, s, h, id) {w.roistatProjectId = id; w.roistatHost = h;var p = d.location.protocol == "https:" ? "https://" : "http://";var u = /^.*roistat_visit=[^;]+(.*)?$/.test(d.cookie) ? "/dist/module.js" : "/api/site/1.0/"+id+"/init?referrer="+encodeURIComponent(d.location.href); var js = d.createElement(s);js.charset="UTF-8"; js.async = 1; js.src = p+h+u; var js2 = d.getElementsByTagName(s)[0]; js2.parentNode.insertBefore(js, js2);})(window, document, "script", "cloud.roistat.com",${this.$data.ROICounterNumber});</` +
+          'script><script>var RoiTildaTimer = setInterval(function() {if (!!window.roistat && !!window.roistat.visit) {clearInterval(RoiTildaTimer);var roiCount=0;var roiFieldsObj = {};document.querySelectorAll("form").forEach(el => {roiFieldsObj["roiformu" + roiCount] = document.createElement("input");roiFieldsObj["roiformu" + roiCount].type = "hidden";roiFieldsObj["roiformu" + roiCount].name = "roistat_url";roiFieldsObj["roiformu" + roiCount].value = document.location.href;el.append(roiFieldsObj["roiformu" + roiCount]);roiFieldsObj["roiformv" + roiCount] = document.createElement("input");roiFieldsObj["roiformv" + roiCount].type = "hidden";roiFieldsObj["roiformv" + roiCount].name = "roistat_fields_roistat";roiFieldsObj["roiformv" + roiCount].value = window.roistat.visit;el.append(roiFieldsObj["roiformv" + roiCount]);roiCount ++;});}},200);</' +
+          "script>";
+    }
+
+    let consent = false;
+
+    if (document.cookie) {
+      const parsedCookie = document.cookie.split(" ");
+      const consentCookie = parsedCookie.find((el) => el.startsWith("cookieConsent"));
+      if (consentCookie) {
+        consent = consentCookie.includes("true");
+        if (consent) {
+          const oldCookieSettings = parsedCookie.find((el) => el.startsWith("cookieType"));
+          if (oldCookieSettings && oldCookieSettings.includes("acceptAll")) {
+            if (this.$data.YMElement) {
+              document.body.append(this.$data.YMElement);
+            }
+            if (this.$data.ROIElement) {
+              document.body.appendChild(this.$data.ROIElement);
+            }
+          }
+        }
+      }
+    }
+
+    if (!consent) {
+      this.showBanner();
+    }
 
     const setCookieButton = document.querySelector('a[href="#setCookie"]');
 
@@ -129,7 +128,7 @@ export default {
         event.preventDefault();
         document.cookie = encodeURIComponent("cookieConsent") + "=" + encodeURIComponent("false");
         document.cookie = encodeURIComponent("cookieType") + "=" + encodeURIComponent(`unset`);
-        this.initCookieBanner();
+        this.showBanner();
       });
     }
   },
