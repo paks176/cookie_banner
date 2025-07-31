@@ -89,7 +89,7 @@
         }
 
         .cookie-banner {
-            max-width: 90%;
+            max-width: 80%;
             font-size: 12px;
             flex-wrap: wrap;
         }
@@ -204,14 +204,16 @@
                 showBanner()
             }
 
-            const setCookieButton = document.querySelector('a[href="#setCookie"]')
+            const setCookieButtons = document.querySelectorAll('a[href="#setCookie"]')
 
-            if (setCookieButton) {
-                setCookieButton.addEventListener('click', (event) => {
-                    event.preventDefault()
-                    document.cookie = encodeURIComponent('cookieConsent') + '=' + encodeURIComponent('false')
-                    document.cookie = encodeURIComponent('cookieType') + '=' + encodeURIComponent(`unset`)
-                    showBanner()
+            if (setCookieButtons.length) {
+                setCookieButtons.forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        event.preventDefault()
+                        document.cookie = encodeURIComponent('cookieConsent') + '=' + encodeURIComponent('false')
+                        document.cookie = encodeURIComponent('cookieType') + '=' + encodeURIComponent(`unset`)
+                        showBanner()
+                    })
                 })
             }
         }
