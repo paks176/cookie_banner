@@ -1,6 +1,6 @@
 <div class="cookie-banner__wrapper">
     <div class="cookie-banner">
-        <p>Мы используем файлы cookie для корректной работы сайта, а также для аналитики и показа персонализированной рекламы. Вы можете выбрать, какие cookie-файлы разрешить. Подробнее — в <a href="/privacy-policy" target="_blank">политике конфиденциальности</a>.</p>
+        <p>Мы используем файлы cookie для корректной работы сайта, а также для аналитики и показа персонализированной рекламы. Вы можете выбрать, какие cookie-файлы разрешить. Подробнее — в <a href="#popup:confident" target="_blank">политике конфиденциальности</a>.</p>
         <div class="cookie-buttons">
             <button id="accept-all">Принять все</button>
             <button id="accept-necessary">Принять только обязательные</button>
@@ -12,7 +12,7 @@
 <style>
     .cookie-banner__wrapper {
         position: fixed;
-        bottom: 50px;
+        bottom: 60px;
         left: 0;
         justify-content: center;
         align-items: center;
@@ -33,8 +33,11 @@
         justify-content: space-between;
         align-items: center;
         gap: 30px;
-        font-size: 16px;
+        font-size: 14px;
         font-family: 'Montserrat', Arial, sans-serif;
+        -webkit-box-shadow: 0px 0px 8px 0px rgba(34, 60, 80, 0.2);
+        -moz-box-shadow: 0px 0px 8px 0px rgba(34, 60, 80, 0.2);
+        box-shadow: 0px 0px 8px 0px rgba(34, 60, 80, 0.2);
     }
     .cookie-banner p {
         margin: 0;
@@ -54,8 +57,7 @@
     }
 
     .cookie-buttons button {
-        background: #171818;
-        color: #FFFFFF;
+        background: #e7ecf0;
         padding: 10px;
         border-radius: 5px;
         border: none;
@@ -64,14 +66,21 @@
         font-size: inherit;
         font-family: inherit;
         flex-grow: 1;
+        font-weight: 600;
+        color: #2a3742;
+        transition: all 0.3s ease;
         &:hover {
-            background: #3f3d3d;
+            background: #df7000;
+            color: white;
         }
     }
 
     #accept-all {
-        color: #171818;
-        background-image: linear-gradient(0.361turn, rgba(6, 233, 205, 1) 0%, rgba(4, 219, 133, 1) 100%);
+        color: white;
+        background-color: #ff8000;
+        &:hover {
+            background: #df7000;
+        }
     }
 
     @media (max-width: 1440px) {
@@ -80,7 +89,7 @@
         }
 
         .cookie-banner {
-            font-size: 14px;
+            font-size: 12px;
             flex-wrap: wrap;
         }
 
@@ -92,20 +101,22 @@
 
 <script>
     function initCookieBanner () {
-        const YMCounterNumber = '' // номер счетчика метрики ЯМ
+        const YMCounterNumber = '97385801' // номер счетчика метрики ЯМ
         let YMElement
 
         if (YMCounterNumber) {
             YMElement = document.createElement('div')
+            YMElement.id = 'counter_' + YMCounterNumber
             YMElement.innerHTML = `<script type="text/javascript">(function(m,e,t,r,i,k,a){m[i]=m[i]function(){(m[i].a=m[i].a[]).push(arguments)};m[i].l=1*new Date();for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");ym(${YMCounterNumber}, "init", {clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});</` + `script><noscript><div><img src="https://mc.yandex.ru/watch/${YMCounterNumber}" style="position:absolute; left:-9999px;" alt="" /></div></noscript>`
         }
 
-        const ROICounterNumber = '' // номер счетчика метрики Ройстат
+        const ROICounterNumber = '0423118e6978725aafc69893bfd4ec2e' // номер счетчика метрики Ройстат
         let ROIElement
 
         if (ROICounterNumber) {
-            ROIElement = document.createElement('script')
-            ROIElement.innerHTML = 'console.log("ROI")'
+            ROIElement = document.createElement('div')
+            ROIElement.id = 'counter_' + ROICounterNumber
+            ROIElement.innerHTML = '<script>window.roistatCookieDomain = ".leasing-trade.ru";</' + 'script>' + `<script>(function(w, d, s, h, id) {w.roistatProjectId = id; w.roistatHost = h;var p = d.location.protocol =="https:" ? "https://" : "http://";var u = /^.*roistat_visit=[^;]+(.*)?$/.test(d.cookie) ? "/dist/module.js" : "/api/site/1.0/"+id+"/init?referrer="+encodeURIComponent(d.location.href);var js = d.createElement(s); js.charset="UTF-8"; js.async = 1; js.src = p+h+u; var js2 = d.getElementsByTagName(s)[0]; js2.parentNode.insertBefore(js, js2);})(window, document, "script", "cloud.roistat.com", ${ROICounterNumber});</` + 'script><script>var RoiTildaTimer = setInterval(function() {if (!!window.roistat && !!window.roistat.visit) {clearInterval(RoiTildaTimer);var roiCount=0;var roiFieldsObj = {};document.querySelectorAll("form").forEach(el => {roiFieldsObj["roiformu" + roiCount] = document.createElement("input");roiFieldsObj["roiformu" + roiCount].type = "hidden";roiFieldsObj["roiformu" + roiCount].name = "roistat_url";roiFieldsObj["roiformu" + roiCount].value = document.location.href;el.append(roiFieldsObj["roiformu" + roiCount]);roiFieldsObj["roiformv" + roiCount] = document.createElement("input");roiFieldsObj["roiformv" + roiCount].type = "hidden";roiFieldsObj["roiformv" + roiCount].name = "roistat_fields_roistat";roiFieldsObj["roiformv" + roiCount].value = window.roistat.visit;el.append(roiFieldsObj["roiformv" + roiCount]);roiCount ++;});}},200);</' + 'script>'
         }
 
         const banner = document.querySelector('.cookie-banner__wrapper')
@@ -140,9 +151,22 @@
                 document.cookie = encodeURIComponent('cookieConsent') + '=' + encodeURIComponent('true')
                 document.cookie = encodeURIComponent('cookieType') + '=' + encodeURIComponent(`${type}`)
                 banner.style.opacity = '0'
+
                 setTimeout(() => {
                     banner.style.display = 'none'
                 }, 500)
+
+                if (type === 'declineAll') {
+                    const counterYM = document.querySelector(`#counter_${YMCounterNumber}`)
+                    if (counterYM) {
+                        counterYM.remove()
+                    }
+
+                    const counterROI = document.querySelector(`#counter_${ROICounterNumber}`)
+                    if (counterROI) {
+                        counterROI.remove()
+                    }
+                }
             }
 
             declineButton.addEventListener('click', () => saveAndHide('declineAll'))
