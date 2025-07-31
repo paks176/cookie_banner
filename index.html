@@ -101,62 +101,51 @@
 </style>
 
 <script>
-    function initCookieBanner () {
-        const YMCounterNumber = '97385801' // номер счетчика метрики ЯМ
-        let YMElement
-
-        if (YMCounterNumber) {
-            YMElement = document.createElement('div')
-            YMElement.id = 'counter_' + YMCounterNumber
-            YMElement.innerHTML = `<script type="text/javascript">(function(m,e,t,r,i,k,a){m[i]=m[i]function(){(m[i].a=m[i].a[]).push(arguments)};m[i].l=1*new Date();for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");ym(${YMCounterNumber}, "init", {clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});</` + `script><noscript><div><img src="https://mc.yandex.ru/watch/${YMCounterNumber}" style="position:absolute; left:-9999px;" alt="" /></div></noscript>`
-        }
-
-        const ROICounterNumber = '0423118e6978725aafc69893bfd4ec2e' // номер счетчика метрики Ройстат
-        let ROIElement
-
-        if (ROICounterNumber) {
-            ROIElement = document.createElement('div')
-            ROIElement.id = 'counter_' + ROICounterNumber
-            ROIElement.innerHTML = `<script>(function(w, d, s, h, id) {w.roistatProjectId = id; w.roistatHost = h;var p = d.location.protocol == "https:" ? "https://" : "http://";var u = /^.*roistat_visit=[^;]+(.*)?$/.test(d.cookie) ? "/dist/module.js" : "/api/site/1.0/"+id+"/init?referrer="+encodeURIComponent(d.location.href); var js = d.createElement(s);js.charset="UTF-8"; js.async = 1; js.src = p+h+u; var js2 = d.getElementsByTagName(s)[0]; js2.parentNode.insertBefore(js, js2);})(window, document, "script", "cloud.roistat.com",${ROICounterNumber});</` + 'script><script>var RoiTildaTimer = setInterval(function() {if (!!window.roistat && !!window.roistat.visit) {clearInterval(RoiTildaTimer);var roiCount=0;var roiFieldsObj = {};document.querySelectorAll("form").forEach(el => {roiFieldsObj["roiformu" + roiCount] = document.createElement("input");roiFieldsObj["roiformu" + roiCount].type = "hidden";roiFieldsObj["roiformu" + roiCount].name = "roistat_url";roiFieldsObj["roiformu" + roiCount].value = document.location.href;el.append(roiFieldsObj["roiformu" + roiCount]);roiFieldsObj["roiformv" + roiCount] = document.createElement("input");roiFieldsObj["roiformv" + roiCount].type = "hidden";roiFieldsObj["roiformv" + roiCount].name = "roistat_fields_roistat";roiFieldsObj["roiformv" + roiCount].value = window.roistat.visit;el.append(roiFieldsObj["roiformv" + roiCount]);roiCount ++;});}},200);</' + 'script>'
-        }
+    document.addEventListener('DOMContentLoaded', () => {
         const banner = document.querySelector('.cookie-banner__wrapper')
 
-        let consent = false
+        if (banner) {
+            const YMCounterNumber = '97385801' // номер счетчика метрики ЯМ
+            let YMElement
 
-        if (document.cookie) {
-            const parsedCookie = document.cookie.split(' ')
-            const consentCookie = parsedCookie.find(el => el.startsWith('cookieConsent'))
-            if (consentCookie) {
-                consent = consentCookie.includes('true')
-                if (consent) {
-                    const oldCookieSettings = parsedCookie.find(el => el.startsWith('cookieType'))
-                    if (oldCookieSettings && oldCookieSettings === 'cookieType=acceptAll;') {
-                        if (YMElement) {
-                            document.body.append(YMElement)
-                        }
-                        if (ROIElement) {
-                            document.body.appendChild(ROIElement)
-                        }
-                    }
-                }
+            if (YMCounterNumber) {
+                YMElement = document.createElement('div')
+                YMElement.id = 'counter_' + YMCounterNumber
+                YMElement.innerHTML = `<script type="text/javascript">(function(m,e,t,r,i,k,a){m[i]=m[i]function(){(m[i].a=m[i].a[]).push(arguments)};m[i].l=1*new Date();for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");ym(${YMCounterNumber}, "init", {clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});</` + `script><noscript><div><img src="https://mc.yandex.ru/watch/${YMCounterNumber}" style="position:absolute; left:-9999px;" alt="" /></div></noscript>`
             }
-        }
 
-        if (banner && !consent) {
-            const necessaryButton = banner.querySelector('#accept-necessary')
-            const allButton = banner.querySelector('#accept-all')
-            const declineButton = banner.querySelector('#decline-all')
+            const ROICounterNumber = '0423118e6978725aafc69893bfd4ec2e' // номер счетчика метрики Ройстат
+            let ROIElement
 
-            function saveAndHide (type) {
-                document.cookie = encodeURIComponent('cookieConsent') + '=' + encodeURIComponent('true')
-                document.cookie = encodeURIComponent('cookieType') + '=' + encodeURIComponent(`${type}`)
+            if (ROICounterNumber) {
+                ROIElement = document.createElement('div')
+                ROIElement.id = 'counter_' + ROICounterNumber
+                ROIElement.innerHTML = `<script>(function(w, d, s, h, id) {w.roistatProjectId = id; w.roistatHost = h;var p = d.location.protocol == "https:" ? "https://" : "http://";var u = /^.*roistat_visit=[^;]+(.*)?$/.test(d.cookie) ? "/dist/module.js" : "/api/site/1.0/"+id+"/init?referrer="+encodeURIComponent(d.location.href); var js = d.createElement(s);js.charset="UTF-8"; js.async = 1; js.src = p+h+u; var js2 = d.getElementsByTagName(s)[0]; js2.parentNode.insertBefore(js, js2);})(window, document, "script", "cloud.roistat.com",${ROICounterNumber});</` + 'script><script>var RoiTildaTimer = setInterval(function() {if (!!window.roistat && !!window.roistat.visit) {clearInterval(RoiTildaTimer);var roiCount=0;var roiFieldsObj = {};document.querySelectorAll("form").forEach(el => {roiFieldsObj["roiformu" + roiCount] = document.createElement("input");roiFieldsObj["roiformu" + roiCount].type = "hidden";roiFieldsObj["roiformu" + roiCount].name = "roistat_url";roiFieldsObj["roiformu" + roiCount].value = document.location.href;el.append(roiFieldsObj["roiformu" + roiCount]);roiFieldsObj["roiformv" + roiCount] = document.createElement("input");roiFieldsObj["roiformv" + roiCount].type = "hidden";roiFieldsObj["roiformv" + roiCount].name = "roistat_fields_roistat";roiFieldsObj["roiformv" + roiCount].value = window.roistat.visit;el.append(roiFieldsObj["roiformv" + roiCount]);roiCount ++;});}},200);</' + 'script>'
+            }
+
+            function showBanner () {
+                banner.style.display = 'flex'
+
+                setTimeout(() => {
+                    banner.style.opacity = '1'
+                }, 500)
+            }
+
+            function hideBanner () {
                 banner.style.opacity = '0'
 
                 setTimeout(() => {
                     banner.style.display = 'none'
                 }, 500)
+            }
 
-                if (type === 'declineAll') {
+            function saveAndHide (event) {
+                document.cookie = encodeURIComponent('cookieConsent') + '=' + encodeURIComponent('true')
+
+                const id = event.target.id
+
+                if (id === 'decline-all' || id === 'accept-necessary') {
+                    document.cookie = encodeURIComponent('cookieType') + '=' + encodeURIComponent('declineAll')
                     const counterYM = document.querySelector(`#counter_${YMCounterNumber}`)
                     if (counterYM) {
                         counterYM.remove()
@@ -167,41 +156,64 @@
                         counterROI.remove()
                     }
                 }
+
+                if (id === 'accept-all') {
+                    document.cookie = encodeURIComponent('cookieType') + '=' + encodeURIComponent('acceptAll')
+
+                    if (YMElement) {
+                        document.body.appendChild(YMElement)
+                    }
+                    if (ROIElement) {
+                        document.body.appendChild(ROIElement)
+                    }
+                }
+
+                hideBanner()
             }
 
-            declineButton.addEventListener('click', () => saveAndHide('declineAll'))
+            const necessaryButton = banner.querySelector('#accept-necessary')
+            const allButton = banner.querySelector('#accept-all')
+            const declineButton = banner.querySelector('#decline-all')
 
-            necessaryButton.addEventListener('click', () => saveAndHide('declineAll'))
+            declineButton.addEventListener('click', saveAndHide)
+            necessaryButton.addEventListener('click', saveAndHide)
+            allButton.addEventListener('click', saveAndHide)
 
-            allButton.addEventListener('click', () => {
-                if (YMElement) {
-                    document.body.append(YMElement)
+            let consent = false
+
+            if (document.cookie) {
+                const parsedCookie = document.cookie.split(' ')
+                const consentCookie = parsedCookie.find(el => el.startsWith('cookieConsent'))
+                if (consentCookie) {
+                    consent = consentCookie.includes('true')
+                    if (consent) {
+                        const oldCookieSettings = parsedCookie.find(el => el.startsWith('cookieType'))
+                        if (oldCookieSettings && oldCookieSettings === 'cookieType=acceptAll;') {
+                            if (YMElement) {
+                                document.body.append(YMElement)
+                            }
+                            if (ROIElement) {
+                                document.body.appendChild(ROIElement)
+                            }
+                        }
+                    }
                 }
-                if (ROIElement) {
-                    document.body.appendChild(ROIElement)
-                }
-                saveAndHide('acceptAll')
-            })
+            }
 
-            banner.style.display = 'flex'
-            setTimeout(() => {
-                banner.style.opacity = '1'
-            }, 500)
-        }
-    }
+            if (banner && !consent) {
+                showBanner()
+            }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        initCookieBanner()
+            const setCookieButton = document.querySelector('a[href="#setCookie"]')
 
-        const setCookieButton = document.querySelector('a[href="#setCookie"]')
-
-        if (setCookieButton) {
-            setCookieButton.addEventListener('click', (event) => {
-                event.preventDefault()
-                document.cookie = encodeURIComponent('cookieConsent') + '=' + encodeURIComponent('false')
-                document.cookie = encodeURIComponent('cookieType') + '=' + encodeURIComponent(`unset`)
-                initCookieBanner()
-            })
+            if (setCookieButton) {
+                setCookieButton.addEventListener('click', (event) => {
+                    event.preventDefault()
+                    document.cookie = encodeURIComponent('cookieConsent') + '=' + encodeURIComponent('false')
+                    document.cookie = encodeURIComponent('cookieType') + '=' + encodeURIComponent(`unset`)
+                    showBanner()
+                })
+            }
         }
     })
 </script>
