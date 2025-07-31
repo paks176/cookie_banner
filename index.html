@@ -190,7 +190,7 @@
                         const oldCookieSettings = parsedCookie.find(el => el.startsWith('cookieType'))
                         if (oldCookieSettings && oldCookieSettings.includes('acceptAll')) {
                             if (YMElement) {
-                                document.body.append(YMElement)
+                                document.body.appendChild(YMElement)
                             }
                             if (ROIElement) {
                                 document.body.appendChild(ROIElement)
