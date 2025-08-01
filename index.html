@@ -39,6 +39,7 @@
         -moz-box-shadow: 0px 0px 8px 0px rgba(34, 60, 80, 0.2);
         box-shadow: 0px 0px 8px 0px rgba(34, 60, 80, 0.2);
     }
+
     .cookie-banner p {
         margin: 0;
     }
@@ -104,7 +105,7 @@
         const banner = document.querySelector('.cookie-banner__wrapper')
 
         if (banner) {
-            const YMCounterNumber = '97385801' // номер счетчика метрики ЯМ
+            const YMCounterNumber = '91592288' // номер счетчика метрики ЯМ
             let YMElement
 
             if (YMCounterNumber) {
@@ -181,7 +182,9 @@
                     const counterYM = document.querySelector(`#counter_${YMCounterNumber}`)
                     if (counterYM) {
                         counterYM.remove()
-                        window[`yaCounter${YMCounterNumber}`].destruct()
+                        if (window[`yaCounter${YMCounterNumber}`]) {
+                            window[`yaCounter${YMCounterNumber}`].destruct()
+                        }
                         const YMScript = document.querySelector('script[src="https://mc.yandex.ru/metrika/tag.js"]')
                         if (YMScript) {
                             YMScript.remove()
