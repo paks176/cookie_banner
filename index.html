@@ -109,18 +109,51 @@
             let YMElement
 
             if (YMCounterNumber) {
-                YMElement = document.createElement('div')
+                YMElement = document.createElement('script')
                 YMElement.id = 'counter_' + YMCounterNumber
-                YMElement.innerHTML = `<script type="text/javascript">(function(m,e,t,r,i,k,a){m[i]=m[i]function(){(m[i].a=m[i].a[]).push(arguments)};m[i].l=1*new Date();for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");ym(${YMCounterNumber}, "init", {clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});</` + `script><noscript><div><img src="https://mc.yandex.ru/watch/${YMCounterNumber}" style="position:absolute; left:-9999px;" alt="" /></div></noscript>`
+                YMElement.innerHTML = 'function initYandexMetrika(m, e, t, r, i, k, a) {\n' +
+                    '       m[i] = m[i] || function() { (m[i].a = m[i].a || []).push(arguments) };\n' +
+                    '       m[i].l = 1 * new Date();\n' +
+                    '       for (var j = 0; j < document.scripts.length; j++) {\n' +
+                    '           if (document.scripts[j].src === r) { return; }\n' +
+                    '       }\n' +
+                    '       k = e.createElement(t);\n' +
+                    '       a = e.getElementsByTagName(t)[0];\n' +
+                    '       k.async = 1;\n' +
+                    '       k.src = r;\n' +
+                    '       a.parentNode.insertBefore(k, a);\n' +
+                    '   }\n' +
+                    '\n' +
+                    '   initYandexMetrika(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");\n' +
+                    '\n' +
+                    `   ym(${YMCounterNumber}, "init", {\n` +
+                    '       clickmap: true,\n' +
+                    '       trackLinks: true,\n' +
+                    '       accurateTrackBounce: true,\n' +
+                    '       webvisor: true\n' +
+                    '   });';
             }
 
             const ROICounterNumber = '0423118e6978725aafc69893bfd4ec2e' // номер счетчика метрики Ройстат
             let ROIElement
 
             if (ROICounterNumber) {
-                ROIElement = document.createElement('div')
+                ROIElement = document.createElement('script')
                 ROIElement.id = 'counter_' + ROICounterNumber
-                ROIElement.innerHTML = `<script>(function(w, d, s, h, id) {w.roistatProjectId = id; w.roistatHost = h;var p = d.location.protocol == "https:" ? "https://" : "http://";var u = /^.*roistat_visit=[^;]+(.*)?$/.test(d.cookie) ? "/dist/module.js" : "/api/site/1.0/"+id+"/init?referrer="+encodeURIComponent(d.location.href); var js = d.createElement(s);js.charset="UTF-8"; js.async = 1; js.src = p+h+u; var js2 = d.getElementsByTagName(s)[0]; js2.parentNode.insertBefore(js, js2);})(window, document, "script", "cloud.roistat.com",${ROICounterNumber});</` + 'script><script>var RoiTildaTimer = setInterval(function() {if (!!window.roistat && !!window.roistat.visit) {clearInterval(RoiTildaTimer);var roiCount=0;var roiFieldsObj = {};document.querySelectorAll("form").forEach(el => {roiFieldsObj["roiformu" + roiCount] = document.createElement("input");roiFieldsObj["roiformu" + roiCount].type = "hidden";roiFieldsObj["roiformu" + roiCount].name = "roistat_url";roiFieldsObj["roiformu" + roiCount].value = document.location.href;el.append(roiFieldsObj["roiformu" + roiCount]);roiFieldsObj["roiformv" + roiCount] = document.createElement("input");roiFieldsObj["roiformv" + roiCount].type = "hidden";roiFieldsObj["roiformv" + roiCount].name = "roistat_fields_roistat";roiFieldsObj["roiformv" + roiCount].value = window.roistat.visit;el.append(roiFieldsObj["roiformv" + roiCount]);roiCount ++;});}},200);</' + 'script>'
+                ROIElement.innerHTML = '            function initROIStatCounter(w, d, s, h, id) {\n' +
+                    '                w.roistatProjectId = id;\n' +
+                    '                w.roistatHost = h;\n' +
+                    '                const p = d.location.protocol === "https:" ? "https://" : "http://";\n' +
+                    '                const u = /^.*roistat_visit=[^;]+(.*)?$/.test(d.cookie) ? "/dist/module.js" : "/api/site/1.0/" + id + "/init?referrer= " + encodeURIComponent(d.location.href);\n' +
+                    '                const js = d.createElement(s);\n' +
+                    '                js.charset = \'UTF-8\';\n' +
+                    '                js.async = 1;\n' +
+                    '                js.src = p + h + u;\n' +
+                    '                const js2 = d.getElementsByTagName(s)[0];\n' +
+                    '                js2.parentNode.insertBefore(js, js2);\n' +
+                    '            }\n' +
+                    '\n' +
+                    `            initROIStatCounter(window, document, 'script', 'cloud.roistat.com', "${ROICounterNumber}")`
             }
 
             function showBanner () {
@@ -149,11 +182,22 @@
                     const counterYM = document.querySelector(`#counter_${YMCounterNumber}`)
                     if (counterYM) {
                         counterYM.remove()
+                        if (window[`yaCounter${YMCounterNumber}`]) {
+                            window[`yaCounter${YMCounterNumber}`].destruct()
+                        }
+                        const YMScript = document.querySelector('script[src="https://mc.yandex.ru/metrika/tag.js"]')
+                        if (YMScript) {
+                            YMScript.remove()
+                        }
                     }
 
                     const counterROI = document.querySelector(`#counter_${ROICounterNumber}`)
                     if (counterROI) {
                         counterROI.remove()
+                        const ROIScript = document.querySelector('script[src="https://cloud.roistat.com/dist/module.js"]')
+                        if (ROIScript) {
+                            ROIScript.remove()
+                        }
                     }
                 }
 
@@ -204,14 +248,16 @@
                 showBanner()
             }
 
-            const setCookieButton = document.querySelector('a[href="#setCookie"]')
+            const setCookieButtons = document.querySelectorAll('a[href="#setCookie"]')
 
-            if (setCookieButton) {
-                setCookieButton.addEventListener('click', (event) => {
+            if (setCookieButtons.length) {
+                setCookieButtons.forEach(button => {
+                    button.addEventListener('click', (event) => {
                     event.preventDefault()
                     document.cookie = encodeURIComponent('cookieConsent') + '=' + encodeURIComponent('false')
                     document.cookie = encodeURIComponent('cookieType') + '=' + encodeURIComponent(`unset`)
                     showBanner()
+                })
                 })
             }
         }
