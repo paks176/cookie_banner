@@ -55,11 +55,22 @@ export default {
         const counterYM = document.querySelector(`#counter_${this.$data.YMCounterNumber}`);
         if (counterYM) {
           counterYM.remove();
+          if (window[`yaCounter${this.$data.YMCounterNumber}`]) {
+            window[`yaCounter${this.$data.YMCounterNumber}`].destruct()
+          }
+          const YMScript = document.querySelector('script[src="https://mc.yandex.ru/metrika/tag.js"]')
+          if (YMScript) {
+            YMScript.remove();
+          }
         }
 
         const counterROI = document.querySelector(`#counter_${this.$data.ROICounterNumber}`);
         if (counterROI) {
           counterROI.remove();
+          const ROIScript = document.querySelector('script[src="https://cloud.roistat.com/dist/module.js"]')
+          if (ROIScript) {
+            ROIScript.remove();
+          }
         }
       }
 
@@ -80,20 +91,49 @@ export default {
 
   mounted() {
     if (this.$data.YMCounterNumber) {
-      this.$data.YMElement = document.createElement("div");
+      this.$data.YMElement = document.createElement("script");
       this.$data.YMElement.id = "counter_" + this.$data.YMCounterNumber;
       this.$data.YMElement.innerHTML =
-          `<script type="text/javascript">(function(m,e,t,r,i,k,a){m[i]=m[i]function(){(m[i].a=m[i].a[]).push(arguments)};m[i].l=1*new Date();for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");ym(${this.$data.YMCounterNumber}, "init", {clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});</` +
-          `script><noscript><div><img src="https://mc.yandex.ru/watch/${this.$data.YMCounterNumber}" style="position:absolute; left:-9999px;" alt="" /></div></noscript>`;
+          'function initYandexMetrika(m, e, t, r, i, k, a) {\n' +
+          '       m[i] = m[i] || function() { (m[i].a = m[i].a || []).push(arguments) };\n' +
+          '       m[i].l = 1 * new Date();\n' +
+          '       for (var j = 0; j < document.scripts.length; j++) {\n' +
+          '           if (document.scripts[j].src === r) { return; }\n' +
+          '       }\n' +
+          '       k = e.createElement(t);\n' +
+          '       a = e.getElementsByTagName(t)[0];\n' +
+          '       k.async = 1;\n' +
+          '       k.src = r;\n' +
+          '       a.parentNode.insertBefore(k, a);\n' +
+          '   }\n' +
+          '\n' +
+          '   initYandexMetrika(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");\n' +
+          '\n' +
+          `   ym(${this.$data.YMCounterNumber}, "init", {\n` +
+          '       clickmap: true,\n' +
+          '       trackLinks: true,\n' +
+          '       accurateTrackBounce: true,\n' +
+          '       webvisor: true\n' +
+          '   });';
     }
 
     if (this.$data.ROICounterNumber) {
       this.$data.ROIElement = document.createElement("div");
       this.$data.ROIElement.id = "counter_" + this.$data.ROICounterNumber;
-      this.$data.ROIElement.innerHTML =
-          `<script>(function(w, d, s, h, id) {w.roistatProjectId = id; w.roistatHost = h;var p = d.location.protocol == "https:" ? "https://" : "http://";var u = /^.*roistat_visit=[^;]+(.*)?$/.test(d.cookie) ? "/dist/module.js" : "/api/site/1.0/"+id+"/init?referrer="+encodeURIComponent(d.location.href); var js = d.createElement(s);js.charset="UTF-8"; js.async = 1; js.src = p+h+u; var js2 = d.getElementsByTagName(s)[0]; js2.parentNode.insertBefore(js, js2);})(window, document, "script", "cloud.roistat.com",${this.$data.ROICounterNumber});</` +
-          'script><script>var RoiTildaTimer = setInterval(function() {if (!!window.roistat && !!window.roistat.visit) {clearInterval(RoiTildaTimer);var roiCount=0;var roiFieldsObj = {};document.querySelectorAll("form").forEach(el => {roiFieldsObj["roiformu" + roiCount] = document.createElement("input");roiFieldsObj["roiformu" + roiCount].type = "hidden";roiFieldsObj["roiformu" + roiCount].name = "roistat_url";roiFieldsObj["roiformu" + roiCount].value = document.location.href;el.append(roiFieldsObj["roiformu" + roiCount]);roiFieldsObj["roiformv" + roiCount] = document.createElement("input");roiFieldsObj["roiformv" + roiCount].type = "hidden";roiFieldsObj["roiformv" + roiCount].name = "roistat_fields_roistat";roiFieldsObj["roiformv" + roiCount].value = window.roistat.visit;el.append(roiFieldsObj["roiformv" + roiCount]);roiCount ++;});}},200);</' +
-          "script>";
+      this.$data.ROIElement.innerHTML = '            function initROIStatCounter(w, d, s, h, id) {\n' +
+          '                w.roistatProjectId = id;\n' +
+          '                w.roistatHost = h;\n' +
+          '                const p = d.location.protocol === "https:" ? "https://" : "http://";\n' +
+          '                const u = /^.*roistat_visit=[^;]+(.*)?$/.test(d.cookie) ? "/dist/module.js" : "/api/site/1.0/" + id + "/init?referrer= " + encodeURIComponent(d.location.href);\n' +
+          '                const js = d.createElement(s);\n' +
+          '                js.charset = \'UTF-8\';\n' +
+          '                js.async = 1;\n' +
+          '                js.src = p + h + u;\n' +
+          '                const js2 = d.getElementsByTagName(s)[0];\n' +
+          '                js2.parentNode.insertBefore(js, js2);\n' +
+          '            }\n' +
+          '\n' +
+          `            initROIStatCounter(window, document, 'script', 'cloud.roistat.com', "${this.$data.ROICounterNumber}")`
     }
 
     let consent = false;
@@ -107,7 +147,7 @@ export default {
           const oldCookieSettings = parsedCookie.find((el) => el.startsWith("cookieType"));
           if (oldCookieSettings && oldCookieSettings.includes("acceptAll")) {
             if (this.$data.YMElement) {
-              document.body.append(this.$data.YMElement);
+              document.body.appendChild(this.$data.YMElement);
             }
             if (this.$data.ROIElement) {
               document.body.appendChild(this.$data.ROIElement);
