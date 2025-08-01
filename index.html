@@ -181,6 +181,7 @@
                     const counterYM = document.querySelector(`#counter_${YMCounterNumber}`)
                     if (counterYM) {
                         counterYM.remove()
+                        window[`yaCounter${YMCounterNumber}`].destruct()
                         const YMScript = document.querySelector('script[src="https://mc.yandex.ru/metrika/tag.js"]')
                         if (YMScript) {
                             YMScript.remove()
