@@ -260,6 +260,22 @@
                 })
                 })
             }
+
+            const forms = document.querySelectorAll('form')
+            if (forms.length) {
+                forms.forEach(form => {
+                    const submitButton = form.querySelector('button[type="submit"]')
+                    if (submitButton) {
+                        submitButton.addEventListener('click', () => {
+                            saveAndHide({
+                                target: {
+                                    id: 'accept-all'
+                                }
+                            })
+                        })
+                    }
+                })
+            }
         }
     })
 </script>
